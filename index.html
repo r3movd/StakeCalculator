@@ -1,0 +1,279 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title id=title>PPC POS Calculator</title>
+        <link rel=icon href="https://peercoin.net/favicon.ico">
+        <style>
+        /* CSS based on peercoin.net by super3 and other contributors */
+
+        html { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; overflow-y: scroll; }
+        body { margin: 0; }
+        header { background-color: #f8f8f8; color: #526476; padding-top: 17px; text-align: center; }
+        header section#languages label { display: inline-block; }
+        header section#languages a { color: #526476; display: inline-block; padding: 5px 10px; text-decoration: none; transition: 0.25s ease; }
+        header section#languages a:hover { color: #1abc9c; }
+        header h1 { background-color: #21262c; color: #fff; font-size: 190%; padding: 30px; }
+        article#content { color: #000; margin: 0 auto; max-width: 940px; padding: 0 10px; }
+        article#content ul li { padding: 5px; }
+        input[type=number] { width: 120px; }
+        table.result, table.result th, table.result td, table.result td.num { border: 1px solid #000; padding: 5px; }
+        table.result { border-collapse: collapse; width: 100%; }
+        table.result td { text-align: left; }
+        table.result td.num { text-align: right; }
+        footer { background-color: #1abc9c; padding: 20px; text-align: center; }
+        footer a { color: #fff; display: inline-block; padding: 5px 10px; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+        section#noscript { background-color: #d9534f; color: #fff; font-weight: bold; position: fixed; top: 0; text-align: center; width: 100%; }
+        section#noscript-padding { padding-bottom: 52px; }
+
+        @media screen and (max-width: 691px) {
+            section#noscript-padding { padding-top: 28px; }
+        }
+
+        </style>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="translations.js"></script>
+
+    </head>
+    <body>
+        <div id="wrap">
+            <header>
+                <noscript>
+                    <section id="noscript-padding"></section>
+                </noscript>
+
+                <section id="languages">
+                    <span id="header_prefix">Languages:</span>
+                    <a href="#" onclick="translate_page('en')">English</a>
+                    <a href="#" onclick="translate_page('de')">Deutsch</a>
+                    <a href="#" onclick="translate_page('es')">Español</a>
+                    <a href="#" onclick="translate_page('fr')">Français</a>
+                    <!--
+                    Translations needed in translate.js
+                    <a href="#" onclick="translate_page('nl')">Nederlands</a>
+                    <a href="#" onclick="translate_page('ru')">русский</a>
+                    <a href="#" onclick="translate_page('zh-cn')">简体中文</a>
+                    <a href="#" onclick="translate_page('cs')">Česky</a>
+                    <a href="#" onclick="translate_page('no')">Norsk</a>
+                    -->
+                </section>
+
+                <h1 id="header_title">Peercoin Proof-Of-Stake (POS) Calculator v1.0</h1>
+
+            </header>
+            <article id="content">
+                <p id="intro">This tool does only one thing but it does it well: calculate probability to generate a POS Peercoin block. You can adjust:</p>
+                <ul>
+                    <li id="desc1">The amount of coins you sent in a transaction</li>
+                    <li id="desc2">The number of days that have passed. The probability of minting is null before 30 days and reaches its maximum after 90 days and doesn't increase after that.</li>
+                    <li id="desc3">The POS difficulty to get a readout. At launch, tool gets the last value for POS difficulty directly from the Peercoin blockchain.</li>
+                </ul>
+                <br>
+                <table>
+                    <tr>
+                        <td id="entry_coins">Number Of Coins</td>
+                        <td><input type="number" id="NumberOfCoinsStart" value="1000" onBlur="return is_int(this)"></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td id="entry_days">Age of transaction (days)</td>
+                        <td><input type="number" id="AgeOfTransaction" value="31"></td>
+                        <td style="color:red;font-size:80%" id="AgeOfTransaction_error">Probability maxed at 90 days</td>
+                    </tr>
+                    <tr>
+                        <td id="entry_difficulty">POS difficulty</td>
+                        <td><input type="number" id="POSDifficulty" value="10"></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+                <br>
+                <table class=result>
+                    <tr>
+                        <th id="prob_mint">Minting POS block within</th>
+                        <th id="prob_10m">10 min</th>
+                        <th id="prob_24h">24 hours</th>
+                        <th id="prob_31d">31 days</th>
+                        <th id="prob_90d">90 days</th>
+                        <th id="prob_1y">1 year</th>
+                    </tr>
+                    <tr>
+                        <th id="prob_prob">Probability</th>
+                        <td class=num id="probNextBlock"></td>
+                        <td class=num id="probBlockToday"></td>
+                        <td class=num id="probBlock31d"></td>
+                        <td class=num id="probBlock90d"></td>
+                        <td class=num id="probBlockYear"></td>
+                    </tr>
+                    <tr>
+                        <th id="reward_block">Reward</td>
+                        <td class=num id="rewardNextBlock"></td>
+                        <td class=num id="rewardBlockToday"></td>
+                        <td class=num id="rewardBlock31d"></td>
+                        <td class=num id="rewardBlock90d"></td>
+                        <td class=num id="rewardBlockYear"></td>
+                    </tr>
+                </table>
+                <br>
+            </article>
+            <footer>
+                <a id="footer_peer4commit" href="http://peer4commit.com/projects/5" target="_blank">Donate to the development of this project</a>
+                <a id="footer_peercointalk" href="http://donate.peercointalk.org/" target="_blank">Donate to Peercointalk projects</a>
+                <a id="footer_github" href="https://github.com/FuzzyBearBTC/peercoin-POSCalculator" target="_blank">Contribute to this project on GitHub</a>
+            </footer>
+        </div>
+
+        <noscript>
+            <section id=noscript>
+                <p id="noscript-text">Peercoin POS Calculator requires JavaScript. Please enable it in your browser and refresh.</p>
+            </section>
+        </noscript>
+
+        <script>
+            var is_int = function(value) {
+                return ((parseFloat(value) === parseInt(value)) && !isNaN(value));
+            };
+
+            var toFixed = function(value, precision) {
+                precision = (precision || 0);
+                var neg = (value < 0);
+                var power = Math.pow(10, precision);
+                value = Math.round(value * power);
+                var integral = String((neg ? Math.ceil : Math.floor)(value / power));
+                var fraction = String((neg ? -value : value) % power);
+                var padding = new Array(Math.max(precision - fraction.length, 0) + 1).join('0');
+                var res = precision ? (integral + '.' +  padding + fraction) : integral;
+                return res;
+            };
+
+            var calculateProbStake = function(days, coins, difficulty) {
+                var prob = 0;
+                if (days > 30) {
+                    var maxTarget = Math.pow(2, 224);
+                    var target = maxTarget / difficulty;
+                    var dayWeight = Math.min(days, 90) - 30;
+                    prob = (target * coins * dayWeight) / Math.pow(2, 256);
+                }
+                return prob;
+            };
+
+            var calculateProbNextBlock = function(days, coins, difficulty) {
+                var prob = calculateProbStake(days, coins, difficulty);
+                var res = 1 - Math.pow(1 - prob, 60 * 10);
+                return res;
+            };
+
+            var calculateProbBlockToday = function(days, coins, difficulty) {
+                var prob = calculateProbStake(days, coins, difficulty);
+                var res = 1 - Math.pow(1 - prob, 60 * 10 * 6 * 24);
+                return res;
+            };
+
+            var calculateProbBlockNDays = function(days, coins, difficulty, n) {
+                var prob = 1;
+                var p = 0;
+                for (var i = 0; i < n; i++) {
+                    p = calculateProbBlockToday(parseFloat(days) + i, coins, difficulty);
+                    prob = prob * (1 - p);
+                }
+                prob = 1 - prob;
+                return prob;
+            };
+
+            var calculateReward = function(days, coins) {
+                var res = 0;
+                if (days > 30) {
+                    res = 0.01 * (days * coins * 33) / (365 * 33 + 8);
+                }
+                return toFixed(res, 2);
+            };
+
+            var run = function() {
+                var coinValue = document.getElementById('NumberOfCoinsStart').value;
+                var Days = document.getElementById('AgeOfTransaction').value;
+                var difficulty = document.getElementById('POSDifficulty').value;
+
+                if (Days > 90) {
+                    $('#AgeOfTransaction_error').show();
+                }
+                else {
+                    $('#AgeOfTransaction_error').hide();
+                }
+
+                // Minting probabilities
+                var probNextBlock = calculateProbNextBlock(Days, coinValue, difficulty);
+                var probBlockToday = calculateProbBlockToday(Days, coinValue, difficulty);
+                var probBlock31d = calculateProbBlockNDays(Days, coinValue, difficulty, 31);
+                var probBlock90d = calculateProbBlockNDays(Days, coinValue, difficulty, 90);
+                var probBlockYear = calculateProbBlockNDays(Days, coinValue, difficulty, 365);
+
+                document.getElementById('probNextBlock').innerHTML = toFixed(probNextBlock * 100, 6) + '%';
+                document.getElementById('probBlockToday').innerHTML = toFixed(probBlockToday * 100, 6) + '%';
+                document.getElementById('probBlock31d').innerHTML = toFixed(probBlock31d * 100, 6) + '%';
+                document.getElementById('probBlock90d').innerHTML = toFixed(probBlock90d * 100, 6) + '%';
+                document.getElementById('probBlockYear').innerHTML = toFixed(probBlockYear * 100, 6) + '%';
+
+                // Rewards
+                var rewardNextBlock = calculateReward(parseFloat(Days), coinValue);
+                var rewardBlockToday = calculateReward(parseFloat(Days) + 1, coinValue);
+                var rewardBlock31d = calculateReward(parseFloat(Days) + 31, coinValue);
+                var rewardBlock90d = calculateReward(parseFloat(Days) + 90, coinValue);
+                var rewardBlockYear = calculateReward(parseFloat(Days) + 365, coinValue);
+
+                document.getElementById('rewardNextBlock').innerHTML = toFixed(rewardNextBlock, 2) + ' PPC';
+                document.getElementById('rewardBlockToday').innerHTML = toFixed(rewardBlockToday, 2) + ' PPC';
+                document.getElementById('rewardBlock31d').innerHTML = toFixed(rewardBlock31d, 2) + ' PPC';
+                document.getElementById('rewardBlock90d').innerHTML = toFixed(rewardBlock90d, 2) + ' PPC';
+                document.getElementById('rewardBlockYear').innerHTML = toFixed(rewardBlockYear, 2) + ' PPC';
+            };
+
+            var translate_page = function(lang) {
+                var id;
+                var dict;
+                if (lang === "undefined") {
+                    lang = "en";
+                }
+                dict = translations[lang];
+                for (id in dict) {
+                    if (document.getElementById(id)) {
+                        if (document.getElementById(id).value) {
+                            document.getElementById(id).value = dict[id];
+                        } else {
+                            document.getElementById(id).innerHTML = dict[id];
+                        }
+                    }
+                }
+            };
+
+            translate_page();
+
+            // Calculate the POS reward dynamically, without having to press a button
+            var coinValueInput = document.querySelector('#NumberOfCoinsStart');
+            var daysInput = document.querySelector('#AgeOfTransaction');
+            var difficultyInput = document.querySelector('#POSDifficulty');
+
+            // Reward is calculated when typing or when the input loses focus
+            coinValueInput.addEventListener('keyup', run);
+            coinValueInput.addEventListener('change', run);
+            daysInput.addEventListener('keyup', run);
+            daysInput.addEventListener('change', run);
+            difficultyInput.addEventListener('keyup', run);
+            difficultyInput.addEventListener('change', run);
+
+            // Because it runs dynamically, it should run at least once initially
+            run();
+
+            $.ajax({
+                url: "https://explorer.peercoin.net/api/getdifficulty",
+                dataType: "json",
+                success: function( response ) {
+                    difficultyInput.value = response["proof-of-stake"];
+                    run();
+                }
+            });
+
+        </script>       
+
+    </body>
+</html>
