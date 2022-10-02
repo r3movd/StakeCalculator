@@ -11,11 +11,8 @@ Created by FuzzyBear of [Peercointalk](http://peercointalk.org/).
 
 ### Contributing
 
-[![tip for next commit](http://peer4commit.com/projects/5.svg)](http://peer4commit.com/projects/5)
-
 If you'd like to contribute code to the project, please send a pull request with your improvements.
 
-Each commit that gets pulled into the project's git repo will receive a tip via [Peer4Commit](http://peer4commit.com/).
 
 The current reward for the next tip is shown above. You will receive that amount of peercoins for each commit you contribute to the project.
 
