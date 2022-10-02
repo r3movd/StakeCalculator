@@ -4,7 +4,6 @@ Stake.com Calculator
 
 JavaScript-based Proof-Of-Stake (POS) reward calculator for Peercoin (PPC), also known as PPCoin.<br>Tool is now in version 1.
 
-Created by FuzzyBear of [Peercointalk](http://peercointalk.org/).
 
 ## Helping Out
 
