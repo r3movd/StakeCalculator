@@ -1,7 +1,6 @@
-Peercoin Proof-Of-Stake (POS) Calculator
+Stake.com Calculator 
 ===
 
-http://peercoin.github.io/peercoin-POSCalculator/
 
 JavaScript-based Proof-Of-Stake (POS) reward calculator for Peercoin (PPC), also known as PPCoin.<br>Tool is now in version 1.
 
@@ -9,13 +8,6 @@ Created by FuzzyBear of [Peercointalk](http://peercointalk.org/).
 
 ## Helping Out
 
-### Donations
-
-Peercoin Donation Address: **```PP2fXAvbuPfzFWDKHKuz77b5BWZHi7NDhR```**
-
-![Peercoin Proof-Of-Stake (POS) Calculator Donation QR Code](http://peer4commit.com/projects/5/qrcode.svg "Donate peercoins to this project")
-
-Please send donations to the above address in order to encourage development contributions, such as code improvements, translations, etc.
 
 ### Contributing
 
@@ -31,7 +23,6 @@ The current reward for the next tip is shown above. You will receive that amount
 
 ### v1.0
 
-* POS difficulty is retrieved directly from the [Peercoin explorer](https://explorer.peercoin.net/)
 * Recast of the explanation texts
 * Translation of no-javascript text and link to how-to enable javascript guide added
 * Minor code improvements
