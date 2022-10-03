@@ -30,4 +30,3 @@ The current reward for the next tip is shown above. You will receive that amount
 
 * Enable calculating the probability of minting a block within 10 minutes, 1 day, 31 days, 90 days and 1 year.
 * Enable calculating the corresponding POS rewards.
- 
